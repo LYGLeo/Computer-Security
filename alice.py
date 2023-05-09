@@ -38,7 +38,7 @@ def encrypt():
 def calc_mac():
   pass
 
-def ae_encrypt:
+def ae_encrypt():
   pass
 
 def run(ae, enckey, mackey, iv, addr = "localhost", port = "22"):
