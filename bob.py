@@ -21,6 +21,12 @@ def ae_decrypt():
   pass
 
 def handler():
+  pid = Recv(8)
+  hour = Recv(8)
+  lat = Recv(21)
+  lon = Recv(21)
+  MAC = Recv(1024)
+  
   pass
 
 def run(ae, enckey, mackey, iv, addr = "localhost", port = "22"):
