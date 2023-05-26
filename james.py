@@ -81,11 +81,22 @@ def run(addr, port, enckey, mackey, iv):
 
     msg = encoded
     logging.info("[*] Sending Data: {}".format(msg))
+
+    st = time()
+    cpu_st = process_time()
+
     encrypted = ae_encrypt(enckey, mackey, iv, msg)
+    
+    ed = time()
+    cpu_ed = process_time()
+
+    print("\ntotal elapsed time:", ed-st)
+    print("total cpu_time:", cpu_ed-cpu_st)
+    
     alice.send(encrypted)
     received = alice.recv(7)
     logging.info("[*] Received: {}".format(received))
-    sleep(2)
+    # sleep(2)
 
 def command_line_args():
     parser = argparse.ArgumentParser()
