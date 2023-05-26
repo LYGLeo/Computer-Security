@@ -60,8 +60,9 @@ def run(addr, port, enckey, mackey, iv):
     logging.info("[*] send GPS information")
 
     for i in range(24):
-        #msg = "{}: {}, {}: {}, {}: {}, {}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
-        msg = "{}: {},{}: {},{}: {},{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+#         msg = "{}: {}, {}: {}, {}: {}, {}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+#         msg = "{}: {},{}: {},{}: {},{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+        msg = "{}: {}{}: {}{}: {}{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
         logging.info("[*] Sending Data: {}".format(msg))
         encrypted = ae_encrypt(enckey, mackey, iv, msg)
         alice.send(encrypted)
