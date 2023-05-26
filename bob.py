@@ -44,7 +44,11 @@ def handler(alice, enckey, mackey, iv):
     decrypted, verified = ae_decrypt(enckey, mackey, iv, received)
     if verified:
         logging.info("[*] MAC verified")
-        logging.info("[*] Plaintext: {}".format(decrypted))
+#        logging.info("[*] Plaintext: {}".format(decrypted))
+        logging.info("[*] {}".format(decrypted[:8]))
+        logging.info("[*] {}".format(decrypted[8:16]))
+        logging.info("[*] {}".format(decrypted[16:37]))
+        logging.info("[*] {}".format(decrypted[37:58]))
         logging.info("[*] Success!")
         result = "success"
     else:
