@@ -1,8 +1,9 @@
+#!/bin/python3
 import socket, threading, argparse, logging, random, queue
 import os, sys
 import hmac, hashlib
 from Crypto.Cipher import AES
-from time import sleep
+from time import sleep, time, process_time
 
 # initiate: python3 bob.py --port 6000 --enckey AAAAAAAAAAAAAAAA --mackey BBBBBBBBBBBBBBBB --iv CCCCCCCCCCCCCCCC
 #We use MAC then Encrypt
@@ -40,8 +41,11 @@ def ae_decrypt(enckey, mackey, iv, received):
 
 def handler(alice, enckey, mackey, iv):
     received = alice.recv(1082)
-    logging.info("[*] Received: {}".format(received))
+#    logging.info("[*] Received: {}".format(received))
+
+
     decrypted, verified = ae_decrypt(enckey, mackey, iv, received)
+
     if verified:
         logging.info("[*] MAC verified")
 #        logging.info("[*] Plaintext: {}".format(decrypted))
@@ -50,6 +54,9 @@ def handler(alice, enckey, mackey, iv):
         logging.info("[*] {}".format(decrypted[16:37]))
         logging.info("[*] {}".format(decrypted[37:58]))
         logging.info("[*] Success!")
+
+        logging.info("________________")
+        
         result = "success"
     else:
         logging.error("[*] Invalid MAC")
@@ -79,13 +86,12 @@ def run(addr, port, enckey, mackey, iv):
     #handle = threading.Thread(target = handler, args = (alice, enckey, mackey, iv))
     #handle.start()
     
+
     for i in range(24):
         handle = threading.Thread(target = handler, args = (alice, enckey, mackey, iv))
         handle.start()
-    
 
-    bob.close()        
-
+    bob.close()
 
 
 def command_line_args():
