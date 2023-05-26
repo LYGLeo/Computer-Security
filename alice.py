@@ -1,8 +1,10 @@
+#!/bin/python3
 import socket, argparse, logging
 import os, sys
 import hmac, hashlib
 from Crypto.Cipher import AES
-from time import sleep
+from time import sleep, time, process_time
+from memory_profiler import memory_usage
 
 # initiate: python3 alice.py --addr 127.0.0.1  --port 6000 --enckey AAAAAAAAAAAAAAAA --mackey BBBBBBBBBBBBBBBB --iv CCCCCCCCCCCCCCCC
 #We use MAC then Encrypt
@@ -11,6 +13,7 @@ ENCKEY_LENGTH = 16 #AES-128
 MAC_LENGTH = 32 #HMAC-SHA256
 BLOCK_LENGTH = 16 #AES block size
 
+# Data Generation
 pid = "000"
 lat = "000.0000000"
 lon = "00.0000000"
@@ -31,6 +34,7 @@ label_hour = ["hour" for _ in range(24)]
 label_lat = ["latitude" for _ in range(24)]
 label_lon = ["longitude" for _ in range(24)]
 
+#Encryption
 def encrypt(key, iv, msg):
     pad = (BLOCK_LENGTH - len(msg)) % BLOCK_LENGTH # must be positive integer
     msg = msg + pad * chr(pad).encode()
@@ -39,11 +43,13 @@ def encrypt(key, iv, msg):
     #raise NotImplementedError("You need to implement the encrypt() function that performs AES-128 encryption")
     return encrypted
 
+#Generate MAC key
 # string * bytes -> bytes
 def calc_mac(key, msg):
     h = hmac.new(key.encode(), msg, hashlib.sha256) # input type of byte
     return h.digest()
 
+#MAC then encrypt
 # int * string * string * string * string -> bytes
 def ae_encrypt(enckey, mackey, iv, msg):
     encrypted = None
@@ -53,22 +59,49 @@ def ae_encrypt(enckey, mackey, iv, msg):
     encrypted = encrypt(enckey, iv, msg)
     return encrypted
 
+#Send
 def run(addr, port, enckey, mackey, iv):
     alice = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     alice.connect((addr, port))
     logging.info("[*] Client is connected to {}:{}".format(addr, port))
     logging.info("[*] send GPS information")
 
+    st = time()
+    cpu_st = process_time()
+    
+    sum_time = 0
+    sum_time_cpu = 0
     for i in range(24):
-#         msg = "{}: {}, {}: {}, {}: {}, {}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
-#         msg = "{}: {},{}: {},{}: {},{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+        #msg = "{}: {}, {}: {}, {}: {}, {}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+#        msg = "{}: {},{}: {},{}: {},{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
         msg = "{}: {}{}: {}{}: {}{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
         logging.info("[*] Sending Data: {}".format(msg))
+
+        st_for = time()
+        cpu_st_for = process_time()
+        
         encrypted = ae_encrypt(enckey, mackey, iv, msg)
+
+        ed_for = time()
+        cpu_ed_for = process_time()
+
         alice.send(encrypted)
         received = alice.recv(7)
         logging.info("[*] Received: {}".format(received))
-        sleep(2)
+
+        sum_time += (ed_for - st_for)
+        sum_time_cpu += (cpu_ed_for - cpu_st_for)
+    
+#        sleep(2)
+
+    ed = time()
+    cpu_ed = process_time()
+
+    print("\ntotal encryption time:", sum_time)
+    print("total encryption cpu time:", sum_time_cpu)
+
+    print("\ntotal elapsed time:", ed-st)
+    print("total cpu_time:", cpu_ed-cpu_st)
 
 def command_line_args():
     parser = argparse.ArgumentParser()
@@ -99,7 +132,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-  
