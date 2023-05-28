@@ -8,9 +8,12 @@ Jbob receive the json file.
 
 # running
 You can run server with "run_server [name] [port]"
+
 The name is bob or jbob.
 
+
 And then run client with "client [alice or james] [port]"
+
 The name is alice or james.
 
 The name pairs are (bob, alice) and (jbob, james).
