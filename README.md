@@ -1,19 +1,17 @@
 # Computer-Security
 
-- Alice send her pid, time at transfer, and GPS data.
-- Bob receive these data.
+Alice send her pid, time at transfer, and GPS data.
+Bob receive these data.  
 
-
-- James send his json file including pid, time at transfer, and GPS data.
-- Jbob receive the json file.
+James send his json file including pid, time at transfer, and GPS data.
+Jbob receive the json file.
 
 # running
-- You can run server with "run_server [name] [port]"
-- The name is bob or jbob.
+You can run server with "run_server [name] [port]"  
+The name is bob or jbob.
 
-
--And then run client with "client [alice or james] [port]"
--The name is alice or james.
+And then run client with "client [alice or james] [port]"  
+The name is alice or james.
 
 The name pairs are (bob, alice) and (jbob, james).
 In other words, if you set server to bob, you should set client to alice.
