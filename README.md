@@ -19,7 +19,7 @@ Also, if you set server to jbob, you should set client to james.
 
 # key
 The default keys are:
-encryption key: AAAAAAAAAAAAAAAA
+encryption key: AAAAAAAAAAAAAAAA\\
 MAC key: BBBBBBBBBBBBBBBB
 initialized vector: CCCCCCCCCCCCCCCC
 
