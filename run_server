@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./$1.py --port $2 --enckey "AAAAAAAAAAAAAAAA" --mackey "BBBBBBBBBBBBBBBB" --iv "CCCCCCCCCCCCCCCC"
