@@ -17,7 +17,7 @@ The name pairs are (bob, alice) and (jbob, james).
 In other words, if you set server to bob, you should set client to alice.
 Also, if you set server to jbob, you should set client to james.
 
-#key
+# key
 The default keys are:
 encryption key: AAAAAAAAAAAAAAAA
 MAC key: BBBBBBBBBBBBBBBB
