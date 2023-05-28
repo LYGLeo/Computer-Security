@@ -3,7 +3,7 @@
 Alice send her pid, time at transfer, and GPS data.  
 Bob receive these data.
 
-James send his json file including pid, time at transfer, and GPS data.
+James send his json file including pid, time at transfer, and GPS data.  
 Jbob receive the json file.
 
 # running
