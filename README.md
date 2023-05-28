@@ -1,11 +1,11 @@
 # Computer-Security
 
--Alice send her pid, time at transfer, and GPS data.
--Bob receive these data.
+- Alice send her pid, time at transfer, and GPS data.
+- Bob receive these data.
 
 
--James send his json file including pid, time at transfer, and GPS data.
--Jbob receive the json file.
+- James send his json file including pid, time at transfer, and GPS data.
+- Jbob receive the json file.
 
 # running
 - You can run server with "run_server [name] [port]"
