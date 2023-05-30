@@ -1,9 +1,10 @@
 #!/bin/python3
+#!/bin/python3
 import socket, argparse, logging
 import os, sys
 import hmac, hashlib
 from Crypto.Cipher import AES
-from time import sleep
+from time import sleep, time, process_time
 import json
 
 # initiate: python3 alice.py --addr 127.0.0.1  --port 6000 --enckey AAAAAAAAAAAAAAAA --mackey BBBBBBBBBBBBBBBB --iv CCCCCCCCCCCCCCCC
@@ -26,7 +27,7 @@ for i in range(24):
     hours[i] = "0" + str(hours[i])
   else:
     hours[i] = str(hours[i])
-    
+
 label_pid = ["pid" for _ in range(24)]
 label_hour = ["hour" for _ in range(24)]
 label_lat = ["latitude" for _ in range(24)]
@@ -39,7 +40,7 @@ for i in range(24):
     pre[i][label_lat[i]] = lats[i]
     pre[i][label_lon[i]] = lons[i]
 
-data = {"data": 
+data = {"data":
         pre
         }
 jdata = json.dumps(data)
@@ -66,7 +67,7 @@ def ae_encrypt(enckey, mackey, iv, msg):
     encrypted = None
 #    msg = msg.encode()
     mac = calc_mac(mackey, msg)
-    msg += mac 
+    msg += mac
     encrypted = encrypt(enckey, iv, msg)
     return encrypted
 
@@ -84,13 +85,13 @@ def run(addr, port, enckey, mackey, iv):
     cpu_st = process_time()
 
     encrypted = ae_encrypt(enckey, mackey, iv, msg)
-    
+
     ed = time()
     cpu_ed = process_time()
 
     print("\ntotal elapsed time:", ed-st)
     print("total cpu_time:", cpu_ed-cpu_st)
-    
+
     alice.send(encrypted)
     received = alice.recv(7)
     logging.info("[*] Received: {}".format(received))

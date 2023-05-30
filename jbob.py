@@ -48,6 +48,7 @@ def handler(alice, enckey, mackey, iv):
     data = pre["data"]
     if verified:
         logging.info("[*] MAC verified")
+        logging.info("[*] text length: {}".format(len(decrypted)))
         for i in range(len(data)):
             for k, v in data[i].items():
                 logging.info("[*] {}:{}".format(k, v))

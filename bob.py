@@ -40,22 +40,22 @@ def ae_decrypt(enckey, mackey, iv, received):
     return decrypted, verified
 
 def handler(alice, enckey, mackey, iv):
-    received = alice.recv(1082)
-#    logging.info("[*] Received: {}".format(received))
-
+    received = alice.recv(100000)
+    #logging.info("[*] Received: {}".format(received))
 
     decrypted, verified = ae_decrypt(enckey, mackey, iv, received)
 
     if verified:
         logging.info("[*] MAC verified")
-#        logging.info("[*] Plaintext: {}".format(decrypted))
-        logging.info("[*] {}".format(decrypted[:8]))
-        logging.info("[*] {}".format(decrypted[8:16]))
-        logging.info("[*] {}".format(decrypted[16:37]))
-        logging.info("[*] {}".format(decrypted[37:58]))
+        logging.info("[*] text length: {}".format(len(decrypted)))
+        for msg in decrypted.split(";"):
+            logging.info("[*] {}".format(msg[:8]))
+            logging.info("[*] {}".format(msg[8:16]))
+            logging.info("[*] {}".format(msg[16:37]))
+            logging.info("[*] {}".format(msg[37:58]))
+            logging.info("__________________________")
         logging.info("[*] Success!")
 
-        logging.info("________________")
         
         result = "success"
     else:
@@ -87,9 +87,8 @@ def run(addr, port, enckey, mackey, iv):
     #handle.start()
     
 
-    for i in range(24):
-        handle = threading.Thread(target = handler, args = (alice, enckey, mackey, iv))
-        handle.start()
+    handle = threading.Thread(target = handler, args = (alice, enckey, mackey, iv))
+    handle.start()
 
     bob.close()
 

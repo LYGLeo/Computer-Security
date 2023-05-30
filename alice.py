@@ -14,13 +14,11 @@ MAC_LENGTH = 32 #HMAC-SHA256
 BLOCK_LENGTH = 16 #AES block size
 
 # Data Generation
-pid = "000"
-lat = "000.0000000"
-lon = "00.0000000"
+pid = "254"
 
 pids = [pid for _ in range(24)]
 hours = [i for i in range(24)]
-ats = [126.9503846, 126.9503871, 126.9503877, 126.9503875, 126.9503823, 126.9503838, 126.9503858, 126.9503804, 126.9503850, 126.9503834, 126.9503888, 126.9503843, 126.9503890, 126.9503892, 126.9503800, 126.9503880, 126.9503800, 126.9503887, 126.9503810, 126.9503878, 126.9503858, 126.9503842, 126.9503867, 126.9502446]
+lats = [126.9503846, 126.9503871, 126.9503877, 126.9503875, 126.9503823, 126.9503838, 126.9503858, 126.9503804, 126.9503850, 126.9503834, 126.9503888, 126.9503843, 126.9503890, 126.9503892, 126.9503800, 126.9503880, 126.9503800, 126.9503887, 126.9503810, 126.9503878, 126.9503858, 126.9503842, 126.9503867, 126.9502446]
 lons = [37.5450378, 37.5450382, 37.5450376, 37.5450381, 37.5450390, 37.5450364, 37.5450379, 37.5450544, 37.5450389, 37.5450392, 37.5450404, 37.5450397, 37.5450394, 37.5450400, 37.5450545, 37.5450382, 37.5450545, 37.5450389, 37.5450427, 37.5450386, 37.5450383, 37.5450391, 37.5450383, 37.5446519]
 
 for i in range(24):
@@ -69,36 +67,27 @@ def run(addr, port, enckey, mackey, iv):
     st = time()
     cpu_st = process_time()
     
+    msg = ""
+    for i in range(24):
+        if i < 23:
+            msg += "{}: {}{}: {}{}: {}{}: {};".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+        if i == 23:
+            msg += "{}: {}{}: {}{}: {}{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
+        
+    logging.info("[*] Sending Data: {}".format(msg))
+
     sum_time = 0
     sum_time_cpu = 0
-    for i in range(24):
-        #msg = "{}: {}, {}: {}, {}: {}, {}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
-#        msg = "{}: {},{}: {},{}: {},{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
-        msg = "{}: {}{}: {}{}: {}{}: {}".format(label_pid[i], pids[i], label_hour[i], hours[i], label_lat[i], lats[i], label_lon[i], lons[i])
-        logging.info("[*] Sending Data: {}".format(msg))
 
-        st_for = time()
-        cpu_st_for = process_time()
-        
-        encrypted = ae_encrypt(enckey, mackey, iv, msg)
-
-        ed_for = time()
-        cpu_ed_for = process_time()
-
-        alice.send(encrypted)
-        received = alice.recv(7)
-        logging.info("[*] Received: {}".format(received))
-
-        sum_time += (ed_for - st_for)
-        sum_time_cpu += (cpu_ed_for - cpu_st_for)
-    
-#        sleep(2)
+    encrypted = ae_encrypt(enckey, mackey, iv, msg)
 
     ed = time()
     cpu_ed = process_time()
 
-    print("\ntotal encryption time:", sum_time)
-    print("total encryption cpu time:", sum_time_cpu)
+    alice.send(encrypted)
+    received = alice.recv(7)
+    logging.info("[*] Received: {}".format(received))
+
 
     print("\ntotal elapsed time:", ed-st)
     print("total cpu_time:", cpu_ed-cpu_st)
